@@ -24,9 +24,35 @@
 - {}  格式化字符串
 
 ### rand库
-生成一个指定范围的随机数
-```
+- 生成一个指定范围的随机数
+```rust
 let select_number = rand::thread_rng().gen_range(1..100); //Rangegen_range(a, b)gen_range(a..b) 用.替换之前的,
 ```
+
+### cmd::Oedering  枚举类型
+- 用于两个值的比较  有三个值  Odering::Less  Ordering::Greater  Odering::Equal
+
+### trim() parse()
+- trim()方法用于去除字符串两边的空白，包括换行符\n
+- parse()方法用于将字符串解析为某种类型的数字 i32，u32，i64
+    - parse()  返回的是Result枚举类型  有两个值：Err Ok
+
+### 类型的隐式显式声明
+- 隐式
+```rust
+let guess = 100;
+```
+- 显式
+```rust
+let guess:i32 = 100;
+
+### match
+通常用于替代expect处理出错
+
+
+
+
+
+
 
 
