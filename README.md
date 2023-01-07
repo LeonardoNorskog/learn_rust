@@ -23,5 +23,10 @@
 - mut 配合let声明一个可变变量
 - {}  格式化字符串
 
+### rand库
+生成一个指定范围的随机数
+```
+let select_number = rand::thread_rng().gen_range(1..100); //Rangegen_range(a, b)gen_range(a..b) 用.替换之前的,
+```
 
 
