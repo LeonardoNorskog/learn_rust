@@ -19,3 +19,13 @@ fn main() {
         println!("4");
     }
 }
+
+// fn test() {
+//     let (a, mut b): (bool,bool) = (true, false);
+//     // a = true,不可变; b = false，可变
+//     println!("a = {:?}, b = {:?}", a, b);
+
+//     b = true;
+//     assert_eq!(a, b);
+//     assert_eq!(2,2);
+// }
