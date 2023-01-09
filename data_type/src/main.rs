@@ -32,4 +32,18 @@ fn main() {
     // 模式匹配
     let (q, w, e) = tup;
     println!("{},{},{}", q, w, e);
+
+    // 数组
+    // let v = [1, 2, 3, 4];
+    // let u: [f64; 4] = [1.1, 2.1, 3.1, 3.1];
+
+    // let weeks = ["星期一", "星期二", "星期三"];
+
+    // print!("");
+    let diff = [2; 4];
+
+    println!("{}", diff[0]);
+
+    println!("{}", diff[6]);
+
 }
