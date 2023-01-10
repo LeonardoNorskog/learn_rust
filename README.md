@@ -34,7 +34,9 @@ fn main() {
 ### rand库
 - 生成一个指定范围的随机数
 ```rust
-let select_number = rand::thread_rng().gen_range(1..100); //Rangegen_range(a, b)gen_range(a..b) 用.替换之前的,
+let select_number = rand::thread_rng().gen_range(1..100); //Rangegen_range  (a, b)gen_range(a..b) 用.替换之前的, 不包含100
+
+let select_number = rand::thread_rng().gen_range(0..=100);  // 包含100
 ```
 
 ### cmd::Oedering  枚举类型
@@ -146,6 +148,8 @@ let num: i32 = num + 1;
             // 模式匹配
             let (x, y, z) = tup;
             println!("{},{},{}", x, y, z);
+
+            let (x, y, z) = (1, 2.0, '3',);  // 解构
             ```
         - 访问Tuple元素
             - 在tuple变量使用点标记法，后接元素索引号
@@ -181,6 +185,12 @@ let num: i32 = num + 1;
         如果访问的索引超出了数组的范围，那么：
             - 编译时会通过 简单的会直接报错
             - 运行时会报错（panic）
+
+        ```rust
+        let num: [i32, 4] = [0, 1, 2, 4];
+
+        let [x, y, z] = [0, 1, 2];  // 解构
+        ```
 
 
 
@@ -265,11 +275,117 @@ fn main() {
 }
 ```
 
+### loop while for循环
+- loop循环
+```rust
+fn main() {
+loop_fn();
+}
+
+fn loop_fn() {
+    // loop循环
+    let mut count: i32 = 0;
+
+    let result = loop {
+        count += 1;
+
+        if count == 10 {
+            break count * 2;
+        }
+    };
+
+    println!("result value is {}", result);
+}
+```
+- while循环
+```rust
+fn main() {
+    while_fn();
+}
+
+fn while_fn() {
+    // while循环
+    let mut count: i32 = 5;
+
+    while count != 0 {
+        println!("count value is {}", count);
+        count -= 1;
+    }
+    println!("发射");
+}
+- for循环
+for循环通常用来遍历数组，相比于while遍历数组更安全不会出现索引错误
+Range指定一个开始和结束数字， Range可以生成它们之间的数字（不含结束）
+rev()方法可以反转Range
+```rust
+fn for_fn() {
+    let num: [i32; 5] = [10, 20, 30, 40, 50];
+
+    // while循环遍历数组
+
+    let mut index = 0;
+
+    while index < 5 {
+        println!("{}", num[index]);
+        index += 1;
+    }
+
+    // for 循环遍历数组
+
+    for x in num.iter().rev() {  // 这个iter() 可以不写
+        println!("{}", x);
+    }
+
+    for i in (1..4).rev() {
+        println!("{}", i);
+    }
+
+    for i in 1..=4 {
+        println!("{}", i);
+    }
+
+}
+```
+- 嵌套循环
+```rust
+fn main() {
+    best_loops();
+}
 
 
+fn best_loops() {
+    let mut num: i32 = 0;
+    'comsider: loop {
+        println!("num is {}", num);
+        let mut best: i32 = 10;
+
+        loop {
+            println!("best is {}", best);
+            if best == 9 {
+                break;
+            }
+            if num == 4 {
+                break 'comsider;
+            }
+            best -= 1;
+        }
+        num += 1;
+    }
+    println!("end is {}, hello world", num);
+}
+```
 
 
-
+### 所有权(Rust核心)
+- 所有权解决的问题
+    - 跟踪代码的哪些部分正在使用heap的哪些数据
+    - 最小化heap上的重复数据量
+    - 清理heap上未使用的数据以避免空间不足
+- 所有权规则
+    - 每个值都有一个变量，这个变量是该值的所有者
+    - 每个值同时只能有一个所有者
+    - 当所有者超出作用域（scope）时，该值将被删除
+- 变量作用域
 
 
 
