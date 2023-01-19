@@ -386,6 +386,275 @@ fn best_loops() {
     - 每个值同时只能有一个所有者
     - 当所有者超出作用域（scope）时，该值将被删除
 - 变量作用域
+    - Scope就是程序中的一个项目的有效范围
+    ```rust
+    fn main() {
+    // s不可用
+    let s = "hello"; // s可用
+                     // 可以对s进行相关操作
+    } // s作用域到此结束，s不再可用
+    ```
+    
+- String类型
+    - 比那些基础标量类型更复杂
+    - 在heap上分配，存储在编译时未知数量的文本
+    - 可以使用from函数从字符串字面值创建出String类型
+
+    ```rust
+    let s = String::from("hello");
+    ```
+    - 修改
+    ```rust
+    let mut s = String::from("hello");
+
+    s.push_str(", world");
+
+    println!("{}", s);
+    // hello, world
+    ```
+
+    - 当变量走出作用域的时候会调用drop函数
+
+    - Corpy Trait 可以用于像整数这样完全存放在stack上面的类型
+     
+
+    - 一些拥有Copy Trait的类型
+        - 任何简单的标量组合类型都是可以Copy的
+        - 任何需要分配内存或某种资源的都不是Copy
+        - 一些拥有Copy Trait的类型：
+            - 整数类型
+            - bool
+            - char
+            - 浮点类型
+            - Tuple，如果所有字段都是Copy，那它就拥有Copy Trait  (i32, i32)是 (i32, String)不是
+        
+- 返回值的所有权移动
+```rust
+fn main() {
+    let s1 = gives_onwership();
+
+    let s2 = String::from("hello");
+
+    let s3 = take_and_gives_back(s2);
+}
+
+fn gives_onwership() -> String {
+    let some_string = String::from("hello");
+
+    some_string
+}
+
+fn take_and_gives_back(a: String) -> String {
+    a
+}
+```
+
+- 引用和借用
+    - &表示引用而不取得其所有权（&String）
+
+    - 引用作为函数参数叫借用
+
+    ```rust
+    fn main() {
+    let s = String::from("hello world");
+
+    let len_s = s_length(&s);
+
+    println!("{} length is {}", s, len_s);
+    }
+
+    fn s_length(some_string: &String) -> usize {
+        some_string.len()
+    }
+    ```
+    - 借用默认不可以修改，因为引用默认也是不可变的，可以通过mut改为可变
+    ```rust
+    fn main() {
+    let mut s = String::from("hello world");
+
+    let len_s = s_length(&mut s);
+
+    println!("{} length is {}", s, len_s);
+    }
+
+    fn s_length(some_string: &mut String) -> usize {
+        some_string.push_str("!!!");
+        some_string.len()
+    }
+    ```
+    - 可变引用在特定作用域，对某一块数据，只能有一个可变引用
+    ```rust
+    fn main() {
+    let mut x = 4;
+
+    let s = &mut x;
+
+    let s1 = &mut x;
+    println!("{s}{s1}")
+    }  // 这是错误的， 同一作用域无法创建多个可变引用
+
+    fn main() {
+    let mut x = 4;
+
+    let s = &mut x;
+
+    {
+        let s1 = &mut x;
+    }
+    }  //这是可以的，不在同一作用域，可以创建多个可变引用
 
 
+    fn main() {
+    let mut x = 4;
+
+    let s = &x;
+
+    let s1 = &x;
+    }  // 可以同时创建多个不可变引用
+
+    fn main() {
+    let mut x = 4;
+
+    let s = &x;
+
+    let s1 = &mut x;
+    }  // 不可以同时拥有一个可变引用和不可变引用
+
+    ```
+- 悬空引用,Rust会避免悬空引用
+```rust
+fn main() {
+    let r = dangle();
+}
+
+fn dangle() -> &String {
+    let s = String::from("hello");
+    &s
+}
+```
+- 切片
+```rust
+fn main() {
+    let s = String::from("hello world");
+
+    let hello = &s[..5];
+    println!("{hello}");
+
+    let world = &s[6..];
+    println!("{world}");
+
+    let hello_world = &s[..];
+
+    println!("{hello_world}");
+}  
+```
+
+```rust
+fn main() {
+    let s = String::from("hello world");
+
+    let index = first_string(&s);
+
+    // s.clear();
+    println!("{index}");
+}
+
+fn first_string(s: &String) -> &str {
+    let bytes = s.as_bytes();
+
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &s[..i];
+        }
+    }
+    &s[..]
+}
+```
+- 将字符串切片作为参数进行传递
+```rust
+fn main() {
+    let s = String::from("hello world");
+
+    let index = first_string(&s[..]);
+
+    let s1 = "hello world";
+    let index = first_string(s1);
+
+    assert_eq!(&s, &s[..]);
+}
+
+fn first_string(s: &str) -> &str {
+    let bytes = s.as_bytes();
+
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &s[..i];
+        }
+    }
+    &s[..]
+}
+```
+
+### struct
+- 定义并实例化struct， 实例化所有字段必须全部赋值，顺序无所谓
+```rust
+#[derive(Debug)]
+#[allow(dead_code)]
+struct User {
+    username: String,
+    email: String,
+    sign_in_count: i32,
+    active: bool,
+}
+fn main() {
+    println!("Hello World");
+
+    let user = User {
+        email: String::from("123445335@qq.com"),
+        username: String::from("Alice"),
+        sign_in_count: 12,
+        active: true,
+    };
+    println!("{:#?}", user);
+    // println!("{}", user.email);
+}
+```
+- 获取实例化struct某个字段的值, 使用点标记法, 要更改struct的值，必须使用mut关键字使其变为可变，一旦可变，所有字段都将是可变的
+```rust
+#[derive(Debug)]
+#[allow(dead_code)]
+struct User {
+    username: String,
+    email: String,
+    sign_in_count: i32,
+    active: bool,
+}
+fn main() {
+    println!("Hello World");
+
+    let mut user = User {
+        email: String::from("123445335@qq.com"),
+        username: String::from("Alice"),
+        sign_in_count: 12,
+        active: true,
+    };
+    // println!("{:#?}", user);
+    // println!("{}", user.email);
+    user.email = String::from("11233@qq.com");
+
+    println!("{}", user.email);
+}
+```
+
+- 使用strauct作为函数返回值
+基于现有的实例创建新示例，可以使用更新语法
+```rust
+fn main() {
+    let user1 = User {
+    email: String::from("11111@qq.com"),
+    ..user
+    };
+}
+```
+- Tuple struct
 
